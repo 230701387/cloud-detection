@@ -1,11 +1,12 @@
-name: CI Pipeline
+name: Full CI/CD Pipeline
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build:
+
+  build-backend:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,5 +22,24 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    - name: Build success
-      run: echo "Pipeline ran successfully"
+    - name: Simulate Docker Build
+      run: echo "Docker image built"
+
+    - name: Simulate Deploy to Azure
+      run: echo "Backend deployed"
+
+---
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    needs: build-backend
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Simulate Frontend Build
+      run: echo "Frontend built"
+
+    - name: Simulate Frontend Deploy
+      run: echo "Frontend deployed"
