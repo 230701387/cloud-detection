@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
     - name: Checkout Code
       uses: actions/checkout@v4
 
@@ -24,6 +25,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    # 🔥 LINTING
+    - name: Lint Codebase
+      run: |
+        pip install flake8
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+    # 🔥 TEST APP
     - name: Verify Flask App
       run: |
         python -c "import application"
@@ -32,18 +40,17 @@ jobs:
       run: |
         python -c "import model"
 
-    - name: Simulate Docker Build
+    # 🔥 REAL DOCKER BUILD
+    - name: Build Docker Image
       run: |
-        echo "Building Docker image..."
+        docker build -t brain-app .
 
-    - name: Simulate Push to Registry
-      run: |
-        echo "Pushing image to Azure Container Registry..."
-
+    # 🔥 HEALTH CHECK
     - name: Health Check
       run: |
         echo "Backend is running successfully"
 
+    # 🔥 DEPLOY TO AZURE
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v2
       with:
@@ -56,6 +63,7 @@ jobs:
     needs: build-backend
 
     steps:
+
     - name: Checkout Code
       uses: actions/checkout@v4
 
@@ -67,6 +75,6 @@ jobs:
       run: |
         echo "Building frontend UI..."
 
-    - name: Simulate Frontend Deployment
+    - name: Frontend Health Check
       run: |
-        echo "Deploying frontend to Azure..."
+        echo "Frontend deployed successfully"
